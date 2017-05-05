@@ -1,0 +1,44 @@
+doctype html
+html(lang="en")
+  head
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Webpack 2 and Twitter Bootstrap</title>
+  body
+    .container
+      .row
+        .col-md-4
+          p
+            img(src="img/img_twitter-bootstrap.png", alt="bootstrap")
+        .col-md-8
+          h1 Webpack 2 and Twitter Bootstrap
+          h2 How to configure Webpack 2 to load Twitter Bootstrap SCSS and JavaScript?
+          button(type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal") Launch demo modal
+          .dropdown
+            button(class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true") Dropdown <span class="caret"></span>
+            ul(class="dropdown-menu" aria-labelledby="dropdownMenu1")
+              li
+                a(href="") Action
+              li
+                a(href="") Another action
+              li
+                a(href="") Something else here
+              li(role="separator" class="divider")
+                a(href="")
+              li
+                a(href="") Separated link
+          .modal.fade(id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel")
+            .modal-dialog(role="document")
+              .modal-content
+                .modal-header
+                  button(type="button" class="close" data-dismiss="modal" aria-label="Close") <span aria-hidden="true">&times;</span>
+                  h4.modal-title#myModalLabel Modal title
+                .modal-body
+                  p Some text goes here.
+                .modal-footer
+                  button(type="button" class="btn btn-default" data-dismiss="modal") Close
+                  button(type="button" class="btn btn-primary") Save changes
+
+
+
