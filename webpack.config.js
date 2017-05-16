@@ -1,19 +1,22 @@
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var webpack = require('webpack');
-var path = require("path");
-var bootstrapEntryPoints = require('./webpack.bootstrap.config.js'); 
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const webpack = require('webpack');
+const path = require("path");
+const bootstrapEntryPoints = require('./webpack.bootstrap.config.js'); 
+const glob = require('glob');
+const PurifyCSSPlugin = require('purifycss-webpack');
 
-var isProd = process.env.NODE_ENV === 'production'; // true or false
-var cssDev = ['style-loader','css-loader', 'sass-loader'];
-var cssProd = ExtractTextPlugin.extract({
+
+const isProd = process.env.NODE_ENV === 'production'; // true or false
+const cssDev = ['style-loader','css-loader?sourceMap', 'sass-loader'];
+const cssProd = ExtractTextPlugin.extract({
 	fallback: 'style-loader',
 	loader: ['css-loader','sass-loader'],
 	publicPath: '/dist'
 });
-var cssConfig = isProd ? cssProd : cssDev;
+const cssConfig = isProd ? cssProd : cssDev;
 
-var bootstrapConfig = isProd ? bootstrapEntryPoints.prod : bootstrapEntryPoints.dev;
+const bootstrapConfig = isProd ? bootstrapEntryPoints.prod : bootstrapEntryPoints.dev;
 
 module.exports = {
 	entry: {
@@ -48,7 +51,11 @@ module.exports = {
         			'file-loader?name=img/[name].[hash:6].[ext]',
         			'image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false'
         		]
-			}
+			},
+			{ test: /\.(woff2?|svg)$/, use: 'url-loader?limit=10000&name=fonts/[name].[ext]' },
+			{ test: /\.(ttf|eot)$/, use: 'file-loader?name=fonts/[name].[ext]' },
+			// Bootstrap 3
+    		{ test:/bootstrap-sass[\/\\]assets[\/\\]javascripts[\/\\]/, use: 'imports-loader?jQuery=jquery' }
 		]
 	},
     devServer: {
@@ -80,11 +87,16 @@ module.exports = {
 		  template: './src/contact.html'
 		}),
 		new ExtractTextPlugin({
-			filename: 'app.css',
+			filename: '/css/[name].css',
 			disable: !isProd,
 			allChunks: true
 		}),
 		new webpack.HotModuleReplacementPlugin(),
-		new webpack.NamedModulesPlugin()
+		new webpack.NamedModulesPlugin(),
+		// Make sure this is after ExtractTextPlugin!
+	    new PurifyCSSPlugin({
+	      // Give paths to parse for rules. These should be absolute!
+	      paths: glob.sync(path.join(__dirname, 'src/*.html')),
+	    })
 	]
 }
